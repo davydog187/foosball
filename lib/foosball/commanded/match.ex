@@ -5,8 +5,14 @@ defmodule Foosball.Commanded.Match do
   alias Foosball.Events, as: E
   alias Foosball.Commands, as: C
 
+  require Logger
+
   def execute(%__MODULE__{id: nil}, c) do
     [%E.MatchCreated{match_id: c.match_id}, execute(%__MODULE__{id: c.match_id}, c)]
+  end
+
+  def execute(%__MODULE__{}, %C.Error{}) do
+    {:error, :failed_to_execute}
   end
 
   def execute(%__MODULE__{} = match, %C.Score{side: side} = c) do
@@ -33,5 +39,10 @@ defmodule Foosball.Commanded.Match do
 
   def apply(%__MODULE__{} = match, %E.ScoreUpdated{home_score: home, away_score: away}) do
     %{match | home_score: home, away_score: away}
+  end
+
+  def apply(%__MODULE__{} = match, command) do
+    Logger.warn("ignoring command on apply #{inspect(command)}")
+    match
   end
 end

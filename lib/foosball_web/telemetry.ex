@@ -30,6 +30,21 @@ defmodule FoosballWeb.Telemetry do
         unit: {:native, :millisecond}
       ),
 
+      # Commanded
+      summary("commanded.aggregate.execute.stop.duration",
+        tags: [:command_name],
+        tag_values: fn metadata ->
+          %name{} = metadata.execution_context.command
+          %{command_name: to_string(name)}
+        end,
+        unit: {:native, :millisecond}
+      ),
+
+      # Commanded
+      last_value("commanded.aggregate.execute.stop.num_events",
+        unit: :count
+      ),
+
       # Database Metrics
       summary("foosball.repo.query.total_time", unit: {:native, :millisecond}),
       summary("foosball.repo.query.decode_time", unit: {:native, :millisecond}),

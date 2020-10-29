@@ -19,6 +19,15 @@ defmodule FoosballWeb.PageLive do
     {:noreply, assign(socket, :score, %{home: home, away: away})}
   end
 
+  def handle_event("dispatch-error", _, socket) do
+    {:error, :failed_to_execute} =
+      Foosball.Commanded.Application.dispatch(%C.Error{
+        match_id: socket.assigns.match_id
+      })
+
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_event("score-" <> side, _, socket) do
     Logger.info("Score event for #{side}")
