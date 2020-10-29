@@ -39,6 +39,14 @@ defmodule FoosballWeb.Telemetry do
         end,
         unit: {:native, :millisecond}
       ),
+      summary("commanded.event.handle.stop.duration",
+        tags: [:event_name],
+        tag_values: fn metadata ->
+          %name{} = metadata.recorded_event.data
+          %{event_name: to_string(name)}
+        end,
+        unit: {:native, :millisecond}
+      ),
 
       # Commanded
       last_value("commanded.aggregate.execute.stop.num_events",
