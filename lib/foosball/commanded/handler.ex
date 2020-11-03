@@ -11,5 +11,15 @@ defmodule Foosball.Commanded.Handler do
       "match:#{e.match_id}",
       {:score_update, Map.from_struct(e)}
     )
+
+    case e.home_score do
+      2 -> {:error, :random_error}
+      3 -> raise "raising error"
+      _ -> :ok
+    end
+  end
+
+  def error(error, event, context) do
+    :skip
   end
 end
