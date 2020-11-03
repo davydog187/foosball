@@ -82,3 +82,17 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :opentelemetry,
+       :processors,
+       ot_batch_processor: %{
+         exporter: {
+           :opentelemetry_exporter,
+           %{
+             endpoints: [
+               {:http, System.get_env("OTEL_COLLECTOR_HOST") || "localhost",
+                String.to_integer(System.get_env("OTEL_COLLECTOR_PORT", "55681")), []}
+             ]
+           }
+         }
+       }

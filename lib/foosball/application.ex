@@ -6,6 +6,11 @@ defmodule Foosball.Application do
   use Application
 
   def start(_type, _args) do
+    OpenTelemetry.register_application_tracer(:foosball)
+    OpentelemetryEcto.setup([:foosball, :repo])
+    OpentelemetryPhoenix.setup()
+    OpentelemetryCommanded.setup()
+
     children = [
       Foosball.Commanded.Application,
       Foosball.Commanded.Handler,

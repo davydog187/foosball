@@ -48,7 +48,16 @@ defmodule Foosball.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:commanded, path: "../commanded", override: true},
-      {:commanded_eventstore_adapter, "~> 1.2", override: true}
+      {:commanded_eventstore_adapter, "~> 1.2", override: true},
+      {:opentelemetry, "~> 0.4"},
+      {:opentelemetry_api, "~> 0.4"},
+      {:opentelemetry_exporter,
+       github: "opentelemetry-beam/opentelemetry_exporter",
+       ref: "63b0966d2d6d7a9e7c21d132507411d1e1f32598"},
+      {:opentelemetry_ecto,
+       github: "opentelemetry-beam/opentelemetry_ecto",
+       ref: "809b7603e6416549bacf85307c6a40da18e7c8b3"},
+      {:opentelemetry_phoenix, "~> 0.1"}
     ]
   end
 

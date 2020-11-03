@@ -3,7 +3,7 @@ defmodule Foosball.Commanded.Handler do
 
   require Logger
 
-  def handle(%Foosball.Events.ScoreUpdated{} = e, _metadata) do
+  def handle(%Foosball.Events.ScoreUpdated{} = e, metadata) do
     Logger.info("Score of #{e.match_id} updated to #{e.away_score} to #{e.home_score}")
 
     Phoenix.PubSub.broadcast(
