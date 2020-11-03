@@ -20,27 +20,7 @@ defmodule OpentelemetryCommanded.EventHandler do
     )
   end
 
-  # recorded_event: %Commanded.EventStore.RecordedEvent{
-  #   causation_id: "d01d6b3c-8e36-46a8-b63d-8fc59ccfb86b",
-  #   correlation_id: "1a649c16-5879-4736-b32a-d4d78964c4ab",
-  #   created_at: ~U[2020-11-03 15:13:40.230474Z],
-  #   data: %Foosball.Events.MatchCreated{
-  #     match_id: "4f91789d-5bcb-404b-b763-968405a7addc"
-  #   },
-  #   event_id: "8a36e9ad-dee9-427f-97fc-cf0dc85fb1c1",
-  #   event_number: 371,
-  #   event_type: "Elixir.Foosball.Events.MatchCreated",
-  #   metadata: %{
-  #     "trace_ctx" => [
-  #       ["traceparent",
-  #        "00-13d93a0bb9f6b774a28913127a36beca-cb255df1a3a8ba8d-01"]
-  #     ]
-  #   },
-  #   stream_id: "4f91789d-5bcb-404b-b763-968405a7addc",
-  #   stream_version: 1
-  # }
-  def handle_start(_event, measurements, %{recorded_event: event} = meta, _) do
-    IO.inspect(meta, label: "event handler meta")
+  def handle_start(_event, measurements, %{recorded_event: event, handler_state: handler}, _) do
     ctx = Enum.map(event.metadata["trace_ctx"], &List.to_tuple/1)
 
     _ = :ot_propagation.http_extract(ctx)
@@ -52,7 +32,12 @@ defmodule OpentelemetryCommanded.EventHandler do
       "event.number": event.event_number,
       "event.type": event.event_type,
       "stream.id": event.stream_id,
-      "stream.version": event.stream_version
+      "stream.version": event.stream_version,
+      application: handler.application,
+      consistency: handler.consistency,
+      "handler.module": handler.handler_module,
+      "handler.name": handler.handler_name,
+      "event.last_seen": handler.last_seen_event
     ]
 
     Tracer.start_span("commanded:event:handle", %{kind: :CONSUMER, attributes: attributes})
